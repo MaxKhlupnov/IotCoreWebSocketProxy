@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yandex Cloud IotCore WebSocketProxy Demo page</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" />
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/signalr.min.js" asp-append-version="true"></script>
+
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Yandex Cloud IotCore MQTT -> WebSocket Proxy</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Device telemetry trace demo</a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+
+
+            <h2 id="connection">
+                <div>Specify IoT Connection details:<a class="anchorjs-link " href="#overview" aria-label="Anchor" data-anchorjs-icon="#" style="padding-left: 0.375em;"></a></div>
+            </h2>
+            <form>
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="device-id">Device Id:</label>
+                        <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Enter IoT Core Device Id" />
+                        <small id="device-id-Help" class="form-text text-muted"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="device-pwd">Device Pwd:</label>
+                        <input type="text" class="form-control" id="device-pwd" aria-describedby="device-pwd-Help" placeholder="Enter IoT Core Device Id password" />
+                        <small id="device-pwd-Help" class="form-text text-muted">We'll never share your deviceid with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="device-cert">Device Certificate: </label>
+                        <textarea class="form-control" id="device-cert" aria-describedby="device-cert-Help" rows="3" placeholder="Enter IoT Core Device Id certificate if required"></textarea>
+                        <small id="device-cert-Help" class="form-text text-muted"></small>
+                    </div>
+                    <div id="btn" class="pb-3">
+                        <input type="button" id="sendBtn" value="Trace telemetry" />
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - IotCoreWebSocketProxy - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+</body>
+</html>
