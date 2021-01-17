@@ -9,9 +9,7 @@
 
     <script src="/lib/jquery/dist/jquery.min.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/signalr.min.js" asp-append-version="true"></script>
-
-
+    
 </head>
 <body>
     <header>
@@ -40,28 +38,30 @@
             <h2 id="connection">
                 <div>Specify IoT Connection details:<a class="anchorjs-link " href="#overview" aria-label="Anchor" data-anchorjs-icon="#" style="padding-left: 0.375em;"></a></div>
             </h2>
-            <form>
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="device-id">Device Id:</label>
-                        <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Enter IoT Core Device Id" />
-                        <small id="device-id-Help" class="form-text text-muted"></small>
-                    </div>
-                    <div class="form-group">
-                        <label for="device-pwd">Device Pwd:</label>
-                        <input type="text" class="form-control" id="device-pwd" aria-describedby="device-pwd-Help" placeholder="Enter IoT Core Device Id password" />
-                        <small id="device-pwd-Help" class="form-text text-muted">We'll never share your deviceid with anyone else.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="device-cert">Device Certificate: </label>
-                        <textarea class="form-control" id="device-cert" aria-describedby="device-cert-Help" rows="3" placeholder="Enter IoT Core Device Id certificate if required"></textarea>
-                        <small id="device-cert-Help" class="form-text text-muted"></small>
-                    </div>
-                    <div id="btn" class="pb-3">
-                        <input type="button" id="sendBtn" value="Trace telemetry" />
-                    </div>
+
+                <div class="form-group  row">
+                    <label for="device-id" class="col-2 col-form-label">Device Id:</label>
+                    <input type="text" class="form-control col col-sm-6" id="device-id" aria-describedby="device-id-Help" placeholder="Enter IoT Core Device Id" />
+                    <small id="device-id-Help" class="form-text text-muted"></small>
                 </div>
-            </form>
+                <div class="form-group  row">
+                    <label for="device-pwd" class="col-2 col-form-label">Device Pwd:</label>
+                    <input type="text" class="form-control col col-sm-6" id="device-pwd" aria-describedby="device-pwd-Help" placeholder="Enter IoT Core Device Id password" />
+                    <small id="device-pwd-Help" class="col col-sm-6" class="form-text text-muted"></small>
+                </div>
+                <div class="form-group  row">
+                    <label for="device-cert" class="col-2 col-form-label">Device Certificate: </label>
+                    <textarea class="form-control" id="device-cert" aria-describedby="device-cert-Help" rows="3" placeholder="Enter IoT Core Device Id certificate if required"></textarea>
+                    <small id="device-cert-Help" class="form-text text-muted"></small>
+                </div>
+                
+            <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
+               
+            <hr>
+
+            <script src="/js/signalr.min.js"></script>
+            <script src="/js/trace.js"></script>
+            <ul id="messageList"></ul>
         </main>
     </div>
 

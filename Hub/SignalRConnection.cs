@@ -7,6 +7,7 @@ namespace IotCoreWebSocketProxy.Hub
 {
     public class SignalRConnection
     {
+        public string ConnectionId { get; set; }
         public string DeviceId { get; set; }
         public string DevicePwd { get; set; }
         public string DeviceCert { get; set; }
