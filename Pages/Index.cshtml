@@ -15,7 +15,21 @@
          <label for="device-id" class="col-form-label">Device Id:</label>
          <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Device Id trace data from" />
          <div><small id="device-id-Help" class="form-text text-muted"></small></div>
-
+         <div class="form-group">
+             <label class="col-form-label custom-control-inline">Trace type:</label>
+             <div class="custom-control custom-radio custom-control-inline">
+                 <input type="radio" id="trace-type-event" name="trace-type-radio" class="custom-control-input" value="event">
+                 <label class="custom-control-label" for="trace-type-event">Events</label>
+             </div>
+             <div class="custom-control custom-radio custom-control-inline">
+                 <input type="radio" id="trace-type-state" name="trace-type-radio" class="custom-control-input" value="event-state">
+                 <label class="custom-control-label" for="trace-type-state">State</label>
+             </div>
+             <div class="custom-control custom-radio custom-control-inline">
+                 <input type="radio" id="trace-type-cmd" name="trace-type-radio" class="custom-control-input" value="event-cmd">
+                 <label class="custom-control-label" for="trace-type-cmd">Command</label>
+             </div>
+         </div>
          <label for="registry-id" class="col-form-label">Registry Id:</label>
          <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Registry id device belongs to" />
          <div><small id="registry-id-Help" class="form-text text-muted"></small></div>
@@ -30,5 +44,5 @@
          </div>
      </div>
          <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
-     
+
          <hr>
