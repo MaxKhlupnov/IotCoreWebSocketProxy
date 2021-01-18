@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Trace device";
+}
+
+<h3 id="connection">
+    Subscribe a registry to a single device topic:
+</h3>
+<div>
+    <a class="text-muted" href="https://cloud.yandex.com/docs/iot-core/operations/subscribe#one-device" target="_blank">Please see documentation for details</a>
+</div>
+     <p><hr></p>  
+     <div class="form-group">
+         <label for="device-id" class="col-form-label">Device Id:</label>
+         <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Device Id trace data from" />
+         <div><small id="device-id-Help" class="form-text text-muted"></small></div>
+
+         <label for="registry-id" class="col-form-label">Registry Id:</label>
+         <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Registry id device belongs to" />
+         <div><small id="registry-id-Help" class="form-text text-muted"></small></div>
+
+         <label for="registry-pwd" class="col-form-label">Password:</label>
+         <input type="password" class="form-control" id="registry-pwd" aria-describedby="registry-pwd-Help" placeholder="Registry password / certificate password" />
+         <small id="registry-pwd-Help" class="form-text text-muted">registry password for username and password authorization / certificate password for certificate-based authorization</small>
+         <div class="custom-file">
+             <label for="registry-cert" class="custom-file-label"> Certificate: <span class="text-muted">(required for certificate-based authorization only)</span> </label>
+             <input type="file" class="custom-file-input" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file" />
+             <small id="registry-cert-Help" class="form-text text-muted"></small>
+         </div>
+     </div>
+         <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
+     
+         <hr>

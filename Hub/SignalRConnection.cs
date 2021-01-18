@@ -9,7 +9,23 @@ namespace IotCoreWebSocketProxy.Hub
     {
         public string ConnectionId { get; set; }
         public string DeviceId { get; set; }
-        public string DevicePwd { get; set; }
-        public string DeviceCert { get; set; }
+        public string RegistryId { get; set; }
+        /// <summary>
+        /// This can be registry password, device password or certificate password
+        /// </summary>
+        public string Password { get; set; }
+        public string RegistryCert { get; set; }
+
+        public byte[]CertificateBytes
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(RegistryCert))
+                    throw new ArgumentNullException("RegistryCert is null");
+                else
+                    return System.Convert.FromBase64String(RegistryCert);
+            }
+            
+        }
     }
 }

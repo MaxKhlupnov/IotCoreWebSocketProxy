@@ -25,8 +25,9 @@ namespace IotCoreWebSocketProxy
   public enum TopicType
   {
     Events = 0,
-    Commands = 1
-  }
+    Commands = 1,
+    State = 2
+    }
 
   class YaIoTClient : IDisposable
   {
@@ -35,11 +36,28 @@ namespace IotCoreWebSocketProxy
 
     private static X509Certificate2 rootCrt = new X509Certificate2("Data/rootCA.crt");
 
-    public static string TopicName(string entityId, EntityType entity, TopicType topic)
+    /**
+        * Please see for details https://cloud.yandex.com/docs/iot-core/concepts/topic
+    */
+        public static string TopicName(string entityId, EntityType entity, TopicType topic)
     {
       string result = (entity == EntityType.Registry) ? "$registries/" : "$devices/";
       result += entityId;
-      result += (topic == TopicType.Events) ? "/events" : "/commands";
+      switch (topic)
+      {
+        case TopicType.Events:
+            result += "/events";
+            break;
+        case TopicType.Commands:
+            result += "/commands";
+            break;
+        case TopicType.State:
+            result += "/state";
+            break;
+        default:
+          throw new ArgumentException($"Incorrect TopicType {topic}");
+       }
+      
       return result;
     }
 
@@ -50,14 +68,14 @@ namespace IotCoreWebSocketProxy
     private ManualResetEvent oCloseEvent = new ManualResetEvent(false);
     private ManualResetEvent oConnectedEvent = new ManualResetEvent(false);
         private IMqttClientOptions connProps = null;
-    public void StartCert(string certPath, string certPassword)
+    public void StartCert(string connectionId, byte[] rowdata, string certPassword)
     {
       X509Certificate certificate;
       if (string.IsNullOrEmpty(certPassword)){
-       certificate = new X509Certificate(certPath);
+        certificate = new X509Certificate(rowdata);
       }else{
         SecureString secPwd = new NetworkCredential("",certPassword).SecurePassword;        
-        certificate = new X509Certificate(certPath, secPwd);
+        certificate = new X509Certificate(rowdata, secPwd);
       }
        
       List <X509Certificate> certificates = new List<X509Certificate>();
@@ -69,9 +87,9 @@ namespace IotCoreWebSocketProxy
         
         Certificates = certificates,
         SslProtocol = SslProtocols.Tls12,
+        CertificateValidationHandler = CertificateValidationHandler,
         UseTls = true
       };
-      tlsOptions.CertificateValidationCallback += CertificateValidationCallback;
 
       // Create TCP based options using the builder.
       var options = new MqttClientOptionsBuilder()
@@ -79,9 +97,8 @@ namespace IotCoreWebSocketProxy
           .WithTcpServer(MqttServer, MqttPort)
           .WithTls(tlsOptions)
           .WithCleanSession()
-          .WithCommunicationTimeout(TimeSpan.FromSeconds(90))
-          .WithKeepAlivePeriod(TimeSpan.FromSeconds(90))
-          .WithKeepAliveSendInterval(TimeSpan.FromSeconds(60))
+          .WithCommunicationTimeout(TimeSpan.FromSeconds(300))
+          .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))         
           .Build();
 
       var factory = new MqttFactory();
@@ -95,25 +112,25 @@ namespace IotCoreWebSocketProxy
       mqttClient.ConnectAsync(this.connProps, CancellationToken.None);
     }
 
-    public void StartPwd(string id, string password)
+    public void StartPwd(string connectionId, string id, string password)
     {
       //setup connection options
       MqttClientOptionsBuilderTlsParameters tlsOptions = new MqttClientOptionsBuilderTlsParameters
       {
         SslProtocol = SslProtocols.Tls12,
+        CertificateValidationHandler = CertificateValidationHandler,
         UseTls = true
       };
-      tlsOptions.CertificateValidationCallback += CertificateValidationCallback;
 
       // Create TCP based options using the builder.
       var options = new MqttClientOptionsBuilder()
-          .WithClientId($"Test_C#_Client_{Guid.NewGuid()}")
+          .WithClientId(connectionId)
           .WithTcpServer(MqttServer, MqttPort)
           .WithTls(tlsOptions)
           .WithCleanSession()
           .WithCredentials(id, password)
-          .WithKeepAlivePeriod(TimeSpan.FromSeconds(90))
-          .WithKeepAliveSendInterval(TimeSpan.FromSeconds(60))
+          .WithCommunicationTimeout(TimeSpan.FromSeconds(300))
+          .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))
           .Build();
 
       var factory = new MqttFactory();
@@ -176,30 +193,30 @@ namespace IotCoreWebSocketProxy
       return Task.CompletedTask;
     }
 
-    private static bool CertificateValidationCallback(X509Certificate cert, X509Chain chain, SslPolicyErrors errors, IMqttClientOptions opts)
-    {
-      try
-      {
-        if (errors == SslPolicyErrors.None)
+        private bool CertificateValidationHandler(MqttClientCertificateValidationCallbackContext arg)
         {
-          return true;
+            try
+            {
+                if (arg.SslPolicyErrors == SslPolicyErrors.None)
+                {
+                    return true;
+                }
+
+                if (arg.SslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+                {
+                    arg.Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                    arg.Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+                    arg.Chain.ChainPolicy.ExtraStore.Add(rootCrt);
+
+                    arg.Chain.Build((X509Certificate2)rootCrt);
+                    var res = arg.Chain.ChainElements.Cast<X509ChainElement>().Any(a => a.Certificate.Thumbprint == rootCrt.Thumbprint);
+                    return res;
+                }
+            }
+            catch { }
+
+            return false;
         }
 
-        if (errors == SslPolicyErrors.RemoteCertificateChainErrors)
-        {
-          chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-          chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-          chain.ChainPolicy.ExtraStore.Add(rootCrt);
-
-          chain.Build((X509Certificate2)rootCrt);
-          var res = chain.ChainElements.Cast<X509ChainElement>().Any(a => a.Certificate.Thumbprint == rootCrt.Thumbprint);
-          return res;
-        }
-      }
-      catch { }
-
-      return false;
     }
-
-  }
 }
