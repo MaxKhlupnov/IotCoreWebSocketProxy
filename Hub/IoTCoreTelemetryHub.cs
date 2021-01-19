@@ -58,7 +58,7 @@ namespace IotCoreWebSocketProxy.Hub
                 RegistryCert = registryCert
             };
 
-            _iotCoreSubscription = new IoTCoreSubscription(conn);
+            _iotCoreSubscription = new IoTCoreSubscription(conn,this._logger);
 
             var clientProxy = Clients.Clients(Context.ConnectionId);
 

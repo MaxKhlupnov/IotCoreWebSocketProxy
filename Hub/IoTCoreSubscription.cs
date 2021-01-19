@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IotCoreWebSocketProxy;
 using MQTTnet.Protocol;
+using Microsoft.Extensions.Logging;
 
 namespace IotCoreWebSocketProxy.Hub
 {
@@ -16,8 +17,12 @@ namespace IotCoreWebSocketProxy.Hub
         private string _topic;
         private YaIoTClient _iotCoreClient;
 
-        internal IoTCoreSubscription(SignalRConnection connection)
+        private ILogger _logger;
+
+        internal IoTCoreSubscription(SignalRConnection connection, ILogger logger)
         {
+            this._logger = logger;
+
             if (connection == null)
                 throw new ArgumentNullException("IoTCoreSubscription called with null connection");
 
@@ -34,7 +39,7 @@ namespace IotCoreWebSocketProxy.Hub
                 this._topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, TopicType.Events);
             }
 
-            _iotCoreClient = new YaIoTClient();
+            _iotCoreClient = new YaIoTClient(logger);
 
         }
         public void RegisterMessageTrace(ClientSender sender)

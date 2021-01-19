@@ -13,6 +13,7 @@ using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using System.Security;
+using Microsoft.Extensions.Logging;
 
 namespace IotCoreWebSocketProxy
 {
@@ -36,6 +37,14 @@ namespace IotCoreWebSocketProxy
 
     private static X509Certificate2 rootCrt = new X509Certificate2("Data/rootCA.crt");
 
+    private ILogger _logger;
+
+    public YaIoTClient(ILogger logger)
+    {
+            this._logger = logger;
+           
+    }
+    
     /**
         * Please see for details https://cloud.yandex.com/docs/iot-core/concepts/topic
     */
