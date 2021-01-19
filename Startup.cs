@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IotCoreWebSocketProxy.Hub;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace IotCoreWebSocketProxy
 {
@@ -17,6 +19,7 @@ namespace IotCoreWebSocketProxy
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+           
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +30,12 @@ namespace IotCoreWebSocketProxy
             services.AddRazorPages();
             services.AddSignalR();
             services.AddCors();
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +49,7 @@ namespace IotCoreWebSocketProxy
             {
                 app.UseExceptionHandler("/Error");
             }
-
+            app.UseResponseCompression();
             app.UseStaticFiles();
             app.UseRouting();
 

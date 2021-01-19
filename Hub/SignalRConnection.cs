@@ -16,6 +16,8 @@ namespace IotCoreWebSocketProxy.Hub
         public string Password { get; set; }
         public string RegistryCert { get; set; }
 
+        public TopicType TopicType { get; set; }
+
         public byte[]CertificateBytes
         {
             get

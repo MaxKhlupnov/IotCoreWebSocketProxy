@@ -15,12 +15,15 @@
 
     document.getElementById("send").addEventListener("click", async () => {
         const device_id = document.getElementById("device-id").value;
-        const device_pwd = document.getElementById("device-pwd").value;
-        const device_cert = document.getElementById("device-cert").value;
+        const registry_id = document.getElementById("registry-id").value;
+        const password = document.getElementById("registry-pwd").value;
+        const trace_type_radio = $('input[name="trace-type-radio"]:checked').val();
+
+        const registry_cert = document.getElementById("registry-cert").value;
 
         // <snippet_Invoke>
         try {
-            await connection.invoke("TraceDeviceMessages", device_id, device_pwd, device_cert);
+            await connection.invoke("TraceDeviceMessages", trace_type_radio, device_id, registry_id, password, registry_cert);
         } catch (err) {
             console.error(err);
         }

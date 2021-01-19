@@ -39,24 +39,24 @@
                 <div>Specify IoT Connection details:<a class="anchorjs-link " href="#overview" aria-label="Anchor" data-anchorjs-icon="#" style="padding-left: 0.375em;"></a></div>
             </h2>
 
-                <div class="form-group  row">
-                    <label for="device-id" class="col-2 col-form-label">Device Id:</label>
-                    <input type="text" class="form-control col col-sm-6" id="device-id" aria-describedby="device-id-Help" placeholder="Enter IoT Core Device Id" />
-                    <small id="device-id-Help" class="form-text text-muted"></small>
-                </div>
-                <div class="form-group  row">
-                    <label for="device-pwd" class="col-2 col-form-label">Device Pwd:</label>
-                    <input type="text" class="form-control col col-sm-6" id="device-pwd" aria-describedby="device-pwd-Help" placeholder="Enter IoT Core Device Id password" />
-                    <small id="device-pwd-Help" class="col col-sm-6" class="form-text text-muted"></small>
-                </div>
-                <div class="form-group  row">
-                    <label for="device-cert" class="col-2 col-form-label">Device Certificate: </label>
-                    <textarea class="form-control" id="device-cert" aria-describedby="device-cert-Help" rows="3" placeholder="Enter IoT Core Device Id certificate if required"></textarea>
-                    <small id="device-cert-Help" class="form-text text-muted"></small>
-                </div>
-                
+            <div class="form-group  row">
+                <label for="registry-id" class="col-2 col-form-label">Registry Id:</label>
+                <input type="text" class="form-control col col-sm-6" id="registry-id" aria-describedby="registry-id-Help" placeholder="Enter IoT Core Device Id" />
+                <small id="registry-id-Help" class="form-text text-muted"></small>
+            </div>
+            <div class="form-group  row">
+                <label for="registry-pwd" class="col-2 col-form-label">Registry Pwd:</label>
+                <input type="password" class="form-control col col-sm-6" id="registry-pwd" aria-describedby="registry-pwd-Help" placeholder="Enter IoT Core Device Id password" />
+                <small id="registry-pwd-Help" class="col col-sm-6" class="form-text text-muted"></small>
+            </div>
+            <div class="form-group  row">
+                <label for="registry-cert" class="col-2 col-form-label">Device Certificate: </label>
+                <textarea class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" rows="3" placeholder="Enter IoT Core Device Id certificate if required"></textarea>
+                <small id="registry-cert-Help" class="form-text text-muted"></small>
+            </div>
+
             <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
-               
+
             <hr>
 
             <script src="/js/signalr.min.js"></script>

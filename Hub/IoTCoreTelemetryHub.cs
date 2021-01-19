@@ -4,12 +4,19 @@ using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace IotCoreWebSocketProxy.Hub
 {
     public class IoTCoreTelemetryHub : Microsoft.AspNetCore.SignalR.Hub
     {
-       
+
+        private readonly ILogger<IoTCoreTelemetryHub> _logger;
+        public IoTCoreTelemetryHub(ILogger<IoTCoreTelemetryHub> logger) : base()
+        {
+            this._logger = logger;
+        }
+
         IoTCoreSubscription _iotCoreSubscription;
 
         public override Task OnDisconnectedAsync(Exception exception)
@@ -27,9 +34,9 @@ namespace IotCoreWebSocketProxy.Hub
         /// <param name="registryId"></param>
         /// <param name="password">registry password or certificate password (for certificate-based authorization)</param>
         /// <param name="registryCert"></param>
-        public void TraceRegistryMessages(string registryId, string password, string registryCert)
+        public void TraceRegistryMessages(string trace_type_radio, string registryId, string password, string registryCert)
         {
-            TraceDeviceMessages(null, registryId, password, registryCert);
+            TraceDeviceMessages(trace_type_radio, null, registryId, password, registryCert);
         }
 
         /// <summary>
@@ -39,11 +46,12 @@ namespace IotCoreWebSocketProxy.Hub
         /// <param name="registryId"></param>
         /// <param name="password">registry password or certificate password (for certificate-based authorization)</param>
         /// <param name="registryCert"></param>
-        public void TraceDeviceMessages(string deviceId, string registryId, string password, string registryCert)
+        public void TraceDeviceMessages(string trace_type_radio, string deviceId, string registryId, string password, string registryCert)
         {
             SignalRConnection conn = new SignalRConnection()
             {
                 ConnectionId = Context.ConnectionId,
+                TopicType = Enum.Parse<TopicType>(trace_type_radio),
                 DeviceId = deviceId,
                 RegistryId = registryId,
                 Password = password,
