@@ -31,12 +31,12 @@ namespace IotCoreWebSocketProxy.Hub
             if (string.IsNullOrEmpty(connection.DeviceId))
             {
                 //Subscribe a registry to the topics of all devices added to it
-                this._topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, TopicType.Events);
+                this._topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, connection.TopicType);
             }
             else
             {
                 // Subscribe a registry to a device's permanent topic 
-                this._topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, TopicType.Events);
+                this._topic = YaIoTClient.TopicName(connection.DeviceId, EntityType.Device, connection.TopicType);
             }
 
             _iotCoreClient = new YaIoTClient(logger);
@@ -47,27 +47,28 @@ namespace IotCoreWebSocketProxy.Hub
             _sender = sender;
 
             if (!string.IsNullOrEmpty(sender.Connection.RegistryCert))
+            // certificate-based authorization
             {
                 this._iotCoreClient.StartCert(sender.Connection.ConnectionId, sender.Connection.CertificateBytes, sender.Connection.Password);
             }
             else
-            {
+            // username and password authorization
+            {                
                 this._iotCoreClient.StartPwd(sender.Connection.ConnectionId, sender.Connection.RegistryId, sender.Connection.Password);
             }
             if (this._iotCoreClient.WaitConnected())
             {
-                Console.WriteLine($"Device {sender.Connection.RegistryId} connected successfully");
+                _logger.LogInformation($"Device {sender.Connection.RegistryId} connected successfully");
+                this._iotCoreClient.Subscribe(this._topic, MqttQualityOfServiceLevel.AtLeastOnce);
+                this._iotCoreClient.SubscribedData += _iotCoreClient_SubscribedData;
             }
             else
             {
-                Console.WriteLine($"Device {sender.Connection.RegistryId} connection error");
+                _logger.LogError($"Device {sender.Connection.RegistryId} connection error");
             }
 
-            this._iotCoreClient.SubscribedData += _iotCoreClient_SubscribedData;
-            this._iotCoreClient.Subscribe(this._topic, MqttQualityOfServiceLevel.AtLeastOnce);
-
-            
-            
+           
+             
         }
 
         private async void _iotCoreClient_SubscribedData(string topic, byte[] payload)

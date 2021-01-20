@@ -15,6 +15,7 @@ using MQTTnet.Client.Options;
 using System.Security;
 using Microsoft.Extensions.Logging;
 
+
 namespace IotCoreWebSocketProxy
 {
   public enum EntityType
@@ -90,27 +91,24 @@ namespace IotCoreWebSocketProxy
       List <X509Certificate> certificates = new List<X509Certificate>();
       certificates.Add(certificate);
 
-      //setup connection options
-      MqttClientOptionsBuilderTlsParameters tlsOptions = new MqttClientOptionsBuilderTlsParameters
-      {
-        
-        Certificates = certificates,
-        SslProtocol = SslProtocols.Tls12,
-        CertificateValidationHandler = CertificateValidationHandler,
-        UseTls = true
-      };
+            //setup connection options
+            MqttClientOptionsBuilderTlsParameters tlsOptions = new MqttClientOptionsBuilderTlsParameters
+            {
+                SslProtocol = SslProtocols.Tls12,
+                CertificateValidationHandler = CertificateValidationHandler,
+                UseTls = true
+            };
 
-      // Create TCP based options using the builder.
-      var options = new MqttClientOptionsBuilder()
-          .WithClientId($"Test_C#_Client_{Guid.NewGuid()}")
-          .WithTcpServer(MqttServer, MqttPort)
-          .WithTls(tlsOptions)
-          .WithCleanSession()
-          .WithCommunicationTimeout(TimeSpan.FromSeconds(300))
-          .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))         
-          .Build();
+            // Create TCP based options using the builder.
+            var options = new MqttClientOptionsBuilder()
+                .WithClientId(connectionId)
+                .WithTcpServer(MqttServer, MqttPort)
+                .WithTls(tlsOptions)
+                .WithCleanSession()
+                .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))
+                .Build();
 
-      var factory = new MqttFactory();
+            var factory = new MqttFactory();
       mqttClient = factory.CreateMqttClient();
 
       mqttClient.UseApplicationMessageReceivedHandler(DataHandler);
@@ -123,26 +121,25 @@ namespace IotCoreWebSocketProxy
 
     public void StartPwd(string connectionId, string id, string password)
     {
-      //setup connection options
-      MqttClientOptionsBuilderTlsParameters tlsOptions = new MqttClientOptionsBuilderTlsParameters
-      {
-        SslProtocol = SslProtocols.Tls12,
-        CertificateValidationHandler = CertificateValidationHandler,
-        UseTls = true
-      };
+            //setup connection options
+            MqttClientOptionsBuilderTlsParameters tlsOptions = new MqttClientOptionsBuilderTlsParameters
+            {
+                SslProtocol = SslProtocols.Tls12,
+                CertificateValidationHandler = CertificateValidationHandler,
+                UseTls = true
+            };
 
-      // Create TCP based options using the builder.
-      var options = new MqttClientOptionsBuilder()
-          .WithClientId(connectionId)
-          .WithTcpServer(MqttServer, MqttPort)
-          .WithTls(tlsOptions)
-          .WithCleanSession()
-          .WithCredentials(id, password)
-          .WithCommunicationTimeout(TimeSpan.FromSeconds(300))
-          .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))
-          .Build();
+            // Create TCP based options using the builder.
+            var options = new MqttClientOptionsBuilder()
+                .WithClientId(connectionId)
+                .WithTcpServer(MqttServer, MqttPort)
+                .WithTls(tlsOptions)
+                .WithCleanSession()
+                .WithCredentials(id, password)
+                .WithKeepAlivePeriod(TimeSpan.FromSeconds(300))
+                .Build();
 
-      var factory = new MqttFactory();
+            var factory = new MqttFactory();
       mqttClient = factory.CreateMqttClient();
 
       mqttClient.UseApplicationMessageReceivedHandler(DataHandler);
