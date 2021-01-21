@@ -13,7 +13,15 @@
     });
     // </snippet_ReceiveMessage>
 
+
     document.getElementById("send").addEventListener("click", async () => {
+        var form = document.getElementById("device-id");
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+        }
+        form.classList.add('was-validated');
         const device_id = document.getElementById("device-id").value;
         const registry_id = document.getElementById("registry-id").value;
         const password = document.getElementById("registry-pwd").value;
