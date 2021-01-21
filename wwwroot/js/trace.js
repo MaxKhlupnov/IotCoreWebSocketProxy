@@ -10,18 +10,20 @@
         const li = document.createElement("li");
         li.textContent = `${message}`;
         document.getElementById("messageList").appendChild(li);
+        scroll_to_latest(li);
     });
     // </snippet_ReceiveMessage>
 
 
     document.getElementById("send").addEventListener("click", async () => {
-        var form = document.getElementById("device-id");
+        var form = document.getElementById("iot-core-trace-form");
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
-            return;
+            form.classList.add('was-validated');
+            return false;
         }
-        form.classList.add('was-validated');
+        
         const device_id = document.getElementById("device-id").value;
         const registry_id = document.getElementById("registry-id").value;
         const password = document.getElementById("registry-pwd").value;
@@ -37,6 +39,16 @@
         }
         // </snippet_Invoke>
     });
+
+        function scroll_to_latest(message_elmt) {
+            if (message_elmt.offsetTop > $(document).height() - $(window).height()) {
+                dest = $(document).height() - $(window).height();
+            } else {
+                dest = message_elmt.offsetTop;
+            }
+            //go to destination
+            $('html,body').animate({ scrollTop: dest }, 1000, 'swing');
+        }
 
         async function start() {
             try {

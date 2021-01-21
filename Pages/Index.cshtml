@@ -4,21 +4,17 @@
     ViewData["Title"] = "Trace device";
 }
 
-<h3 id="connection">
-    Trace a single device topic:
-</h3>
-<div>
+<section id="form">
+    <h3 id="connection">
+        Trace a single device topic:
+    </h3>
     <a class="text-muted" href="https://cloud.yandex.com/docs/iot-core/operations/subscribe#one-device" target="_blank">Please see documentation for details</a>
-</div>
-<p><hr></p>
-<form id="iot-core-trace-form" class="needs-validation" novalidate>
-    <div class="form-group">
-        <label for="device-id" class="col-form-label">Device Id:</label>
-        <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Device Id trace data from" required />
-        <div class="invalid-feedback">Please provide a device identifier.</div>
-    </div>
-        
-    <div class="form-group">
+
+    <form id="iot-core-trace-form" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="device-id" class="col-form-label">Device Id:</label>
+            <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Device Id trace data from" required />
+            <div class="invalid-feedback">Please provide a device identifier.</div>
             <label class="col-form-label custom-control-inline">Trace type:</label>
             <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="trace-type-event" name="trace-type-radio" class="custom-control-input" checked value="Events">
@@ -32,30 +28,34 @@
                 <input type="radio" id="trace-type-cmd" name="trace-type-radio" class="custom-control-input" value="Commands">
                 <label class="custom-control-label" for="trace-type-cmd">Commands</label>
             </div>
-    </div>
-        <label for="registry-id" class="col-form-label">Registry Id:</label>
-        <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Registry id device belongs to" required />
-        <div><small id="registry-id-Help" class="form-text text-muted">We don't store your credentials</small></div>
-        <div class="invalid-feedback">
-            Please provide a registry identifier.
         </div>
-
-        <label for="registry-pwd" class="col-form-label">Password:</label>
-        <input type="password" class="form-control" id="registry-pwd" aria-describedby="registry-pwd-Help" placeholder="Registry password / certificate password" required />
-        <small id="registry-pwd-Help" class="form-text text-muted">registry password for username and password authorization (optional for certificate-based authorization)</small>
-        <div class="invalid-feedback">
-            Please provide a password.
+        <div class="form-group">
+            <label for="registry-id" class="col-form-label">Registry Id:</label>
+            <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Registry id device belongs to" required />
+            <div><small id="registry-id-Help" class="form-text text-muted">We don't store your credentials</small></div>
+            <div class="invalid-feedback">
+                Please provide a registry identifier.
+            </div>
+            <label for="registry-pwd" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="registry-pwd" aria-describedby="registry-pwd-Help" placeholder="Registry password / certificate password" required />
+            <small id="registry-pwd-Help" class="form-text text-muted">registry password for username and password authorization (optional for certificate-based authorization)</small>
+            <div class="invalid-feedback">
+                Please provide a password.
+            </div>
+            <label for="registry-cert" class="col-form-label">Private key:<span class="text-muted">(required for certificate-based authorization only)</span> </label>
+            <textarea disabled rows="3" class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file"></textarea>
+            <small id="registry-cert-Help" class="form-text text-muted"></small>
         </div>
-        <label for="registry-cert" class="col-form-label">Private key:<span class="text-muted">(required for certificate-based authorization only)</span> </label>
-        <textarea rows="3" class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file"></textarea>
-        <small id="registry-cert-Help" class="form-text text-muted"></small>
+        <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
 
-    
-    <button id="send" type="button" class="btn btn-primary">Trace telemetry</button>
-</form>
+    </form>
     <hr>
+</section>
+    <a id="scroll-to" class="scroll text-muted" href="#telemetry"></a>
     <ul id="messageList"></ul>
-    @section Scripts
+    <section id="telemetry">
+    </section>
+@section Scripts
     {
-        <script src="~/js/trace.js"></script>
-    }
+    <script src="~/js/trace.js"></script>
+}

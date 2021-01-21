@@ -10,13 +10,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Yandex Cloud IotCore</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <div class="container float-left">
                     <ul class="nav nav-tabs" id="mainTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" role="tab" asp-area="" asp-page="/Index">Trace device</a>
@@ -31,7 +25,7 @@
                             <a class="nav-link" id="sendCommandTab" role="tab" asp-area="" asp-page="/SendCommand">Send command</a>
                         </li>
                     </ul>
-                </div>
+                <a class="navbar-brand" asp-area="" asp-page="https://cloud.yandex.com/docs/iot-core/" target="_blank">Yandex Cloud IotCore</a>
             </div>
         </nav>
     </header>

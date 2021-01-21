@@ -74,15 +74,13 @@ namespace IotCoreWebSocketProxy.Hub
         private async void _iotCoreClient_SubscribedData(string topic, byte[] payload)
         {
             if (payload != null)
-                await ProcessMessagesAsync(payload);
+            {
+                string msgString = Encoding.UTF8.GetString(payload);
+                await _sender.SendAsync(msgString);
+            }
 
         }
 
-        private async Task ProcessMessagesAsync(byte[] body)
-        {
-            string msgString = Encoding.UTF8.GetString(body);
-            await _sender.SendAsync(msgString);
-        }
 
         public void DeleteSubscription(string subscriptionId)
         {
