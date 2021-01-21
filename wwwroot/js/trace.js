@@ -31,6 +31,13 @@
 
         const registry_cert = document.getElementById("registry-cert").value;
 
+        // disable button
+        $("#send").prop("disabled", true);
+        // add spinner to button
+        $("#send").html(
+            `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Waiting for telemetry messages...`
+        );
+
         // <snippet_Invoke>
         try {
             await connection.invoke("TraceDeviceMessages", trace_type_radio, device_id, registry_id, password, registry_cert);
@@ -38,6 +45,7 @@
             console.error(err);
         }
         // </snippet_Invoke>
+
     });
 
         function scroll_to_latest(message_elmt) {
