@@ -48,25 +48,35 @@ namespace IotCoreWebSocketProxy.Hub
         /// <param name="registryCert"></param>
         public void TraceDeviceMessages(string trace_type_radio, string deviceId, string registryId, string password, string registryCert)
         {
-            SignalRConnection conn = new SignalRConnection()
+            try
             {
-                ConnectionId = Context.ConnectionId,
-                TopicType = Enum.Parse<TopicType>(trace_type_radio),
-                DeviceId = deviceId,
-                RegistryId = registryId,
-                Password = password,
-                RegistryCert = registryCert
-            };
+                SignalRConnection conn = new SignalRConnection()
+                {
+                    ConnectionId = Context.ConnectionId,
+                    TopicType = Enum.Parse<TopicType>(trace_type_radio),
+                    DeviceId = deviceId,
+                    RegistryId = registryId,
+                    Password = password,
+                    RegistryCert = registryCert
+                };
 
-            _iotCoreSubscription = new IoTCoreSubscription(conn,this._logger);
+               
 
-            var clientProxy = Clients.Clients(Context.ConnectionId);
+                var clientProxy = Clients.Clients(Context.ConnectionId);
 
-            var messageSender = new ClientSender(clientProxy, conn);
+                var messageSender = new ClientSender(clientProxy, conn, this._logger);
 
-            _iotCoreSubscription.RegisterMessageTrace(messageSender);
+                _iotCoreSubscription = new IoTCoreSubscription(conn);
+                _iotCoreSubscription.RegisterMessageTrace(messageSender);
+            }
+            catch(Exception ex)
+            {
+                this._logger.LogError(ex.Message);
+                throw new HubException(ex.Message);
+            }
         }
 
 
     }
+
 }

@@ -8,7 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace IotCoreWebSocketProxy.Hub
 {
-    public class IoTCoreSubscription
+
+
+    public class IoTCoreSubscription 
     {
 
         private ClientSender _sender;
@@ -17,11 +19,8 @@ namespace IotCoreWebSocketProxy.Hub
         private string _topic;
         private YaIoTClient _iotCoreClient;
 
-        private ILogger _logger;
-
-        internal IoTCoreSubscription(SignalRConnection connection, ILogger logger)
+        internal IoTCoreSubscription(SignalRConnection connection)
         {
-            this._logger = logger;
 
             if (connection == null)
                 throw new ArgumentNullException("IoTCoreSubscription called with null connection");
@@ -39,12 +38,13 @@ namespace IotCoreWebSocketProxy.Hub
                 this._topic = YaIoTClient.TopicName(connection.DeviceId, EntityType.Device, connection.TopicType);
             }
 
-            _iotCoreClient = new YaIoTClient(logger);
+            
 
         }
         public void RegisterMessageTrace(ClientSender sender)
         {
             _sender = sender;
+            _iotCoreClient = new YaIoTClient(sender);
 
             if (!string.IsNullOrEmpty(sender.Connection.RegistryCert))
             // certificate-based authorization
@@ -58,13 +58,14 @@ namespace IotCoreWebSocketProxy.Hub
             }
             if (this._iotCoreClient.WaitConnected())
             {
-                _logger.LogInformation($"Device {sender.Connection.RegistryId} connected successfully");
+                _sender.SendInfo($"Device {sender.Connection.RegistryId} connected successfully");
                 this._iotCoreClient.Subscribe(this._topic, MqttQualityOfServiceLevel.AtLeastOnce);
                 this._iotCoreClient.SubscribedData += _iotCoreClient_SubscribedData;
             }
             else
             {
-                _logger.LogError($"Device {sender.Connection.RegistryId} connection error");
+                _sender.SendError($"Device {sender.Connection.RegistryId} connection error");
+                
             }
 
            

@@ -14,7 +14,7 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using System.Security;
 using Microsoft.Extensions.Logging;
-
+using IotCoreWebSocketProxy.Hub;
 
 namespace IotCoreWebSocketProxy
 {
@@ -38,11 +38,11 @@ namespace IotCoreWebSocketProxy
 
     private static X509Certificate2 rootCrt = new X509Certificate2("Data/rootCA.crt");
 
-    private ILogger _logger;
+    private ClientSender _sender;
 
-    public YaIoTClient(ILogger logger)
+    public YaIoTClient(ClientSender sender)
     {
-            this._logger = logger;
+            this._sender = sender;
            
     }
     
@@ -114,7 +114,7 @@ namespace IotCoreWebSocketProxy
       mqttClient.UseApplicationMessageReceivedHandler(DataHandler);
       mqttClient.UseConnectedHandler(ConnectedHandler);
       mqttClient.UseDisconnectedHandler(this.DisconnectedHandler);
-      Console.WriteLine($"Connecting to mqtt.cloud.yandex.net...");
+            _sender.SendInfo($"Connecting to mqtt.cloud.yandex.net...");
       this.connProps = options;
       mqttClient.ConnectAsync(this.connProps, CancellationToken.None);
     }
@@ -146,7 +146,7 @@ namespace IotCoreWebSocketProxy
       mqttClient.UseConnectedHandler(ConnectedHandler);
       this.connProps = options;
       mqttClient.UseDisconnectedHandler(this.DisconnectedHandler);
-      Console.WriteLine($"Connecting to mqtt.cloud.yandex.net...");
+            _sender.SendInfo($"Connecting to mqtt.cloud.yandex.net...");
       mqttClient.ConnectAsync(options, CancellationToken.None);
     }
 
@@ -186,9 +186,9 @@ namespace IotCoreWebSocketProxy
     {
       Console.WriteLine($"Disconnected mqtt.cloud.yandex.net.");
     if (arg.Exception != null && !string.IsNullOrEmpty(arg.Exception.Message))
-        Console.WriteLine($"Error {arg.Exception.Message}");
+                _sender.SendError($"Error {arg.Exception.Message}");
            Thread.Sleep(5000); // Wait 5 sec before next connection attempt
-            Console.WriteLine($"Trying reconnect");
+            _sender.SendInfo($"Trying reconnect");
             this.mqttClient.ConnectAsync(this.connProps, CancellationToken.None);  
       return Task.CompletedTask;
     }

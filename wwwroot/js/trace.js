@@ -4,13 +4,22 @@
         .withUrl("/telemetryhub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
-
+    
     // <snippet_ReceiveMessage>
     connection.on("Trace", (message) => {
         const li = document.createElement("li");
         li.textContent = `${message}`;
         document.getElementById("messageList").appendChild(li);
         scroll_to_latest(li);
+    });
+
+    // <snippet_ReceiveMessage>
+    connection.on("Error", (message) => {
+        write_message("alert-danger", message);
+    });
+
+    connection.on("Info", (message) => {
+        write_message("alert-info", message);
     });
     // </snippet_ReceiveMessage>
 
@@ -41,12 +50,17 @@
         // <snippet_Invoke>
         try {
             await connection.invoke("TraceDeviceMessages", trace_type_radio, device_id, registry_id, password, registry_cert);
-        } catch (err) {
+        } catch (err) {            
             console.error(err);
+            write_message("alert-danger", err);
         }
         // </snippet_Invoke>
 
     });
+
+        function write_message(alert_class, err) {
+            $('#messageList').append(`<li><div class="alert ${alert_class}" role="alert">${err}</div></li>`);
+        }
 
         function scroll_to_latest(message_elmt) {
             if (message_elmt.offsetTop > $(document).height() - $(window).height()) {
@@ -60,10 +74,12 @@
 
         async function start() {
             try {
+                // connection.hub.logging = true;
                 await connection.start();
                 console.log("SignalR Connected.");
-            } catch (err) {
+            } catch (err) {              
                 console.log(err);
+                write_message("alert-danger", err);
                 setTimeout(start, 5000);
             }
         };
