@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["IotCoreWebSocketProxy/IotCoreWebSocketProxy/IotCoreWebSocketProxy.csproj", "IotCoreWebSocketProxy/IotCoreWebSocketProxy/"]
-RUN dotnet restore "IotCoreWebSocketProxy/IotCoreWebSocketProxy/IotCoreWebSocketProxy.csproj"
+COPY ["IotCoreWebSocketProxy/IotCoreWebSocketProxy.csproj", "IotCoreWebSocketProxy"]
+RUN dotnet restore "IotCoreWebSocketProxy/IotCoreWebSocketProxy.csproj"
 COPY . .
-WORKDIR "/src/IotCoreWebSocketProxy/IotCoreWebSocketProxy"
+WORKDIR "/src/IotCoreWebSocketProxy"
 RUN dotnet build "IotCoreWebSocketProxy.csproj" -c Release -o /app/build
 
 FROM build AS publish

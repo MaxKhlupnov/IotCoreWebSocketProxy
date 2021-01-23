@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using IotCoreWebSocketProxy.Models;
 
 namespace IotCoreWebSocketProxy.Hub
 {
@@ -50,7 +51,7 @@ namespace IotCoreWebSocketProxy.Hub
         {
             try
             {
-                SignalRConnection conn = new SignalRConnection()
+                ConnectionModel conn = new ConnectionModel()
                 {
                     ConnectionId = Context.ConnectionId,
                     TopicType = Enum.Parse<TopicType>(trace_type_radio),

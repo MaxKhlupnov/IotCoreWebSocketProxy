@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Hub\SignalRConnection.cs" />
+    <Content Include="Models\ConnectionModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="MQTTnet.AspNetCore" Version="3.0.13" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.10.1" />
     <PackageReference Include="System.Json" Version="4.7.1" />
   </ItemGroup>
 
@@ -60,6 +61,12 @@
     <Content Update="C:\Users\makhlu\.nuget\packages\bootstrap\4.6.0\contentFiles\any\any\wwwroot\css\bootstrap.min.css.map">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\CA.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

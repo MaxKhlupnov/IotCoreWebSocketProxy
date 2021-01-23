@@ -36,9 +36,12 @@ namespace IotCoreWebSocketProxy
     public const string MqttServer = "mqtt.cloud.yandex.net";
     public const int MqttPort = 8883;
 
-    private static X509Certificate2 rootCrt = new X509Certificate2("Data/rootCA.crt");
+    private static X509Certificate2 rootCrt = new X509Certificate2("Data/CA.pem");
 
     private ClientSender _sender;
+
+    private int RetryNumber = 0;
+    private const int MAX_RETRIES = 5;
 
     public YaIoTClient(ClientSender sender)
     {
@@ -161,10 +164,17 @@ namespace IotCoreWebSocketProxy
       Stop();
     }
 
+
+
     public bool WaitConnected()
     {
       WaitHandle[] waites = { oCloseEvent, oConnectedEvent };
-      return WaitHandle.WaitAny(waites) == 1;
+      bool isConnected = WaitHandle.WaitAny(waites) == 1;
+            if (isConnected)
+            {
+                this.RetryNumber = 0;
+            }
+      return isConnected;
     }
 
     public Task Subscribe(string topic, MQTTnet.Protocol.MqttQualityOfServiceLevel qos)
@@ -185,11 +195,19 @@ namespace IotCoreWebSocketProxy
     private Task DisconnectedHandler(MqttClientDisconnectedEventArgs arg)
     {
       Console.WriteLine($"Disconnected mqtt.cloud.yandex.net.");
-    if (arg.Exception != null && !string.IsNullOrEmpty(arg.Exception.Message))
+            if (arg.Exception != null && !string.IsNullOrEmpty(arg.Exception.Message))
+            {
                 _sender.SendError($"Error {arg.Exception.Message}");
-           Thread.Sleep(5000); // Wait 5 sec before next connection attempt
-            _sender.SendInfo($"Trying reconnect");
-            this.mqttClient.ConnectAsync(this.connProps, CancellationToken.None);  
+            }
+           
+            this.RetryNumber++;
+            if (this.RetryNumber <= MAX_RETRIES)
+            {               
+                _sender.SendInfo($"Retry #{this.RetryNumber} in next 5 sec. Maximum {MAX_RETRIES} retries");
+                Thread.Sleep(5000); // Wait 5 sec before next connection attempt
+                this.mqttClient.ConnectAsync(this.connProps, CancellationToken.None);
+            }
+
       return Task.CompletedTask;
     }
 

@@ -1,14 +1,14 @@
 ﻿@page
-@model IndexModel
+@model IotCoreWebSocketProxy.Pages.SendToRegistryModel
 @{
-    ViewData["Title"] = "Trace device";
+    ViewData["Title"] = "Send to registry";
 }
 
 <section id="form">
     <h3 id="connection">
-        Trace event data a single device topic:
+        Send event data from a device to registry / send command to all devices in registry
     </h3>
-    <a class="text-muted" href="https://cloud.yandex.com/docs/iot-core/operations/subscribe#one-device" target="_blank">Please see documentation for details</a>
+    <a class="text-muted" href="https://cloud.yandex.com/docs/iot-core/operations/publish" target="_blank">Please see documentation for details</a>
 
     <form id="iot-core-trace-form" class="needs-validation" novalidate>
         <div class="form-group">
@@ -20,10 +20,10 @@
                 <input type="radio" id="trace-type-event" name="trace-type-radio" class="custom-control-input" checked value="Events">
                 <label class="custom-control-label" for="trace-type-event">Events</label>
             </div>
-            <div class="custom-control custom-radio custom-control-inline">
+            <!--- div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="trace-type-state" name="trace-type-radio" class="custom-control-input" value="State">
                 <label class="custom-control-label" for="trace-type-state">State</label>
-            </div>
+            </div --->
             <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="trace-type-cmd" name="trace-type-radio" class="custom-control-input" value="Commands">
                 <label class="custom-control-label" for="trace-type-cmd">Commands</label>
@@ -46,16 +46,17 @@
             <textarea disabled rows="3" class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file"></textarea>
             <small id="registry-cert-Help" class="form-text text-muted"></small>
         </div>
-        <button id="trace" type="button" class="btn btn-primary">Trace telemetry</button>
+        <button id="send" type="button" class="btn btn-primary">Send</button>
 
     </form>
     <hr>
 </section>
-    <a id="scroll-to" class="scroll text-muted" href="#telemetry"></a>
-    <ul id="messageList"></ul>
-    <section id="telemetry">
-    </section>
+<a id="scroll-to" class="scroll text-muted" href="#telemetry"></a>
+<ul id="messageList"></ul>
+
 @section Scripts
-    {
-    <script src="~/js/trace.js"></script>
+{
+    <script>
+        $('#sendToRegistryTab').tab('show')
+    </script>
 }

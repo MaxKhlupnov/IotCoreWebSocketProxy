@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IotCoreWebSocketProxy;
 using MQTTnet.Protocol;
 using Microsoft.Extensions.Logging;
+using IotCoreWebSocketProxy.Models;
 
 namespace IotCoreWebSocketProxy.Hub
 {
@@ -14,12 +15,12 @@ namespace IotCoreWebSocketProxy.Hub
     {
 
         private ClientSender _sender;
-        private SignalRConnection _connection;
+        private ConnectionModel _connection;
         
         private string _topic;
         private YaIoTClient _iotCoreClient;
 
-        internal IoTCoreSubscription(SignalRConnection connection)
+        internal IoTCoreSubscription(ConnectionModel connection)
         {
 
             if (connection == null)
@@ -58,14 +59,13 @@ namespace IotCoreWebSocketProxy.Hub
             }
             if (this._iotCoreClient.WaitConnected())
             {
-                _sender.SendInfo($"Device {sender.Connection.RegistryId} connected successfully");
+                _sender.SendInfo($"Device {sender.Connection.RegistryId} connected successfully. Topic: {this._topic}");
                 this._iotCoreClient.Subscribe(this._topic, MqttQualityOfServiceLevel.AtLeastOnce);
                 this._iotCoreClient.SubscribedData += _iotCoreClient_SubscribedData;
             }
             else
             {
-                _sender.SendError($"Device {sender.Connection.RegistryId} connection error");
-                
+                throw new ApplicationException($"Device {sender.Connection.RegistryId} connection error. Topic: {this._topic}");
             }
 
            

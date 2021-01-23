@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IotCoreWebSocketProxy.Hub
+namespace IotCoreWebSocketProxy.Models
 {
-    public class SignalRConnection
+    public class ConnectionModel
     {
         public string ConnectionId { get; set; }
         public string DeviceId { get; set; }

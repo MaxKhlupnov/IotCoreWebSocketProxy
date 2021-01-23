@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using IotCoreWebSocketProxy.Hub;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.ResponseCompression;
+using NSwag.AspNetCore;
+using NSwag;
 
 namespace IotCoreWebSocketProxy
 {
@@ -27,9 +29,11 @@ namespace IotCoreWebSocketProxy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddRazorPages();
             services.AddSignalR();
             services.AddCors();
+            services.AddOpenApiDocument();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -55,9 +59,28 @@ namespace IotCoreWebSocketProxy
 
             app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
+            
+            app.UseOpenApi(settings =>
+            {
+                settings.PostProcess = (document, request) =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "IotCore web client demo API";
+
+                    document.Info.License = new OpenApiLicense
+                    {
+                        Name = "Use under MIT License",
+                        Url = "https://github.com/MaxKhlupnov/IotCoreWebSocketProxy"
+                    };
+                };
+            });
+
+            app.UseSwaggerUi3();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
                 endpoints.MapHub<IoTCoreTelemetryHub>("/telemetryhub");
             });
 

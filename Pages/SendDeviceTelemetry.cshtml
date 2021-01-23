@@ -1,0 +1,70 @@
+﻿@page
+@model IotCoreWebSocketProxy.Pages.SendDeviceTelemetryModel
+@{
+    ViewData["Title"] = "Device send";
+}
+
+<section id="form">
+    <h3 id="connection">
+        Send message from a device / send command to device
+    </h3>
+    <a class="text-muted" href="https://cloud.yandex.com/docs/iot-core/operations/publish" target="_blank">Please see documentation for details</a>
+
+    <form id="iot-core-device-send-form" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="device-id" class="col-form-label">Device Id:</label>
+            <input type="text" class="form-control" id="device-id" aria-describedby="device-id-Help" placeholder="Device Id send message from / send command to" required />
+            <div class="invalid-feedback">Please provide a device identifier.</div>
+            <label for="device-pwd" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="device-pwd" aria-describedby="device-pwd-Help" placeholder="Device password / registry password" required />
+            <small id="device-pwd-Help" class="form-text text-muted">device password to send message  / registry password to send command</small>
+            <div class="invalid-feedback">
+                Please provide a password.
+            </div>
+            <label for="registry-cert" class="col-form-label">Private key:<span class="text-muted">(required for certificate-based authorization only)</span> </label>
+            <textarea disabled rows="3" class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file"></textarea>
+            <small id="registry-cert-Help" class="form-text text-muted"></small>
+            <label class="col-form-label custom-control-inline">Send:</label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="trace-type-event" name="trace-type-radio" class="custom-control-input" checked value="Events">
+                <label class="custom-control-label" for="trace-type-event">Event data</label>
+            </div>
+
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="trace-type-cmd" name="trace-type-radio" class="custom-control-input" value="Commands">
+                <label class="custom-control-label" for="trace-type-cmd">Command</label>
+            </div>
+            <div class="form-row">
+                <label for="registry-id" class="col-form-label">Registry Id:</label>
+                <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Specify Registry id send data to / send command to" />
+                <div>
+                    <small id="registry-id-Help" class="form-text text-muted">
+                        required to send message from a device to a registry topic or to send command.
+                        <a href="https://cloud.yandex.com/docs/iot-core/operations/publish#to-registry-topic" target="_blank">Details...</a>
+                    </small>
+                </div>
+            </div>
+        </div>        
+        <div class="form-group">
+            <label for="message" class="col-form-label">Data:</label>
+            <textarea rows="3" class="form-control" id="message" aria-describedby="message-Help" placeholder="Event message or command data" required></textarea>
+            <small id="message-Help" class="form-text text-muted"></small>
+            <div class="invalid-feedback">
+                Please specify message data.
+            </div>
+        </div>
+            <button id="device_send" type="button" class="btn btn-primary">Send</button>
+
+    </form>
+    <hr>
+</section>
+<a id="scroll-to" class="scroll text-muted" href="#telemetry"></a>
+<ul id="messageList"></ul>
+
+@section Scripts
+{
+    <script>
+        $('#sendDeviceTelemetryTab').tab('show')
+    </script>
+    <script src="~/js/trace.js"></script>
+}

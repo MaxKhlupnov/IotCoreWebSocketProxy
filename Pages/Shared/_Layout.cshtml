@@ -11,20 +11,23 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container float-left">
-                    <ul class="nav nav-tabs" id="mainTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" role="tab" asp-area="" asp-page="/Index">Trace device</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="traceRegistryTab" role="tab" asp-area="" asp-page="/TraceRegistry">Trace registry</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="sendTelemetryTab" role="tab" asp-area="" asp-page="/SendTelemetry">Send telemetry</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="sendCommandTab" role="tab" asp-area="" asp-page="/SendCommand">Send command</a>
-                        </li>
-                    </ul>
+                <ul class="nav nav-tabs" id="mainTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" role="tab" asp-area="" asp-page="/Index">Trace device</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="traceRegistryTab" role="tab" asp-area="" asp-page="/TraceRegistry">Trace registry</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sendDeviceTelemetryTab" role="tab" asp-area="" asp-page="/SendDeviceTelemetry">Device send</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="sendToRegistryTab" role="tab" asp-area="" asp-page="/SendToRegistry">Registry send</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="browseApiTab" role="tab" href="/swagger" target="_blank">Swagger</a>
+                    </li>
+                </ul>
                 <a class="navbar-brand" asp-area="" asp-page="https://cloud.yandex.com/docs/iot-core/" target="_blank">Yandex Cloud IotCore</a>
             </div>
         </nav>

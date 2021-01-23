@@ -23,40 +23,107 @@
     });
     // </snippet_ReceiveMessage>
 
+        // Trace telemetry on click handler
+    if (document.getElementById("trace")) {
+        document.getElementById("trace").addEventListener("click", async () => {
+            var form = document.getElementById("iot-core-trace-form");
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return false;
+            }
 
-    document.getElementById("send").addEventListener("click", async () => {
-        var form = document.getElementById("iot-core-trace-form");
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            form.classList.add('was-validated');
-            return false;
+            const device_id = document.getElementById("device-id").value;
+            const registry_id = document.getElementById("registry-id").value;
+            const password = document.getElementById("registry-pwd").value;
+            const trace_type_radio = $('input[name="trace-type-radio"]:checked').val();
+
+            const registry_cert = document.getElementById("registry-cert").value;
+
+            // disable button
+            $("#trace").prop("disabled", true);
+            // add spinner to button
+            $("#trace").html(
+                `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Waiting for telemetry messages...`
+            );
+
+            // <snippet_Invoke>
+            try {
+                await connection.invoke("TraceDeviceMessages", trace_type_radio, device_id, registry_id, password, registry_cert);
+            } catch (err) {
+                console.error(err);
+                write_message("alert-danger", err);
+            }
+            // </snippet_Invoke>
+
+        });
+    }
+        // Send telemetry on click handler
+    if (document.getElementById("device_send")) {
+        document.getElementById("device_send").addEventListener("click", async () => {
+            var form = document.getElementById("iot-core-device-send-form");
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return false;
+            }
+            const uri = 'api/message/send'
+
+            const message = {
+                "deviceId": document.getElementById("device-id").value,
+                "registryId": document.getElementById("registry-id").value,
+                "password": document.getElementById("device-pwd").value,
+                "registryCert": document.getElementById("registry-cert").value,
+                "topicType": $('input[name="trace-type-radio"]:checked').val(),
+                "message": document.getElementById("message").value
+            };
+
+            // disable button
+            $("#device_send").prop("disabled", true);
+            // add spinner to button
+            $("#device_send").html(
+                `<span id="iot-core-device-send-form-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending message...`
+            );
+
+            fetch(uri, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            })
+                .then(response => response.json())
+                .then(() => {
+                    $("#device_send").prop("disabled", false);
+                    $("#device_send").html("Send message");
+                    //$('#iot-core-device-send-form-spinner').remove();
+                    getItems();
+                    addNameTextbox.value = '';
+                })
+                .catch(error => console.error('Unable to add item.', error));
+        });
+
+    }
+
+        function getItems() {
+            fetch(uri)
+                .then(response => response.json())
+                .then(data => _displayItems(data))
+                .catch(error => console.error('Unable to get items.', error));
         }
-        
-        const device_id = document.getElementById("device-id").value;
-        const registry_id = document.getElementById("registry-id").value;
-        const password = document.getElementById("registry-pwd").value;
-        const trace_type_radio = $('input[name="trace-type-radio"]:checked').val();
 
-        const registry_cert = document.getElementById("registry-cert").value;
+        function displayEditForm(id) {
+            const item = todos.find(item => item.id === id);
 
-        // disable button
-        $("#send").prop("disabled", true);
-        // add spinner to button
-        $("#send").html(
-            `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Waiting for telemetry messages...`
-        );
-
-        // <snippet_Invoke>
-        try {
-            await connection.invoke("TraceDeviceMessages", trace_type_radio, device_id, registry_id, password, registry_cert);
-        } catch (err) {            
-            console.error(err);
-            write_message("alert-danger", err);
+            document.getElementById('edit-name').value = item.name;
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-isComplete').checked = item.isComplete;
+            document.getElementById('editForm').style.display = 'block';
         }
-        // </snippet_Invoke>
 
-    });
 
         function write_message(alert_class, err) {
             $('#messageList').append(`<li><div class="alert ${alert_class}" role="alert">${err}</div></li>`);

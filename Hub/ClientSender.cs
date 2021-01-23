@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using IotCoreWebSocketProxy.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -8,7 +9,7 @@ namespace IotCoreWebSocketProxy.Hub
     {
         private readonly IClientProxy _clientProxy;
         private readonly ILogger _logger;
-        public ClientSender(IClientProxy clientProxy, SignalRConnection conn, ILogger logger)
+        public ClientSender(IClientProxy clientProxy, ConnectionModel conn, ILogger logger)
         {
             _clientProxy = clientProxy;
             _logger = logger;
@@ -32,6 +33,6 @@ namespace IotCoreWebSocketProxy.Hub
             return _clientProxy.SendAsync("Info", message);           
         }
 
-        public SignalRConnection Connection { get; }
+        public ConnectionModel Connection { get; }
     }
 }

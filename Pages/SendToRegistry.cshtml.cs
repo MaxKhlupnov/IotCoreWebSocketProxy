@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IotCoreWebSocketProxy.Pages
 {
-    public class SendCommandModel : PageModel
+    public class SendToRegistryModel : PageModel
     {
         public void OnGet()
         {
