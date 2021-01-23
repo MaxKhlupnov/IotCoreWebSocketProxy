@@ -34,6 +34,12 @@ namespace IotCoreWebSocketProxy.Controllers
                 RegistryCert = model.RegistryCert
             };
             SyncClientSender clientSender = new SyncClientSender();
+
+            if (string.IsNullOrEmpty(connection.DeviceId) || string.IsNullOrEmpty(connection.Password) || string.IsNullOrEmpty(model.Message))
+            {
+                await clientSender.SendError("DeviceId, Password and Model are required fields");
+                return BadRequest(clientSender);
+            }
             if (TopicType.Commands == connection.TopicType && string.IsNullOrEmpty(connection.RegistryId))
             {
                 await clientSender.SendError("RegistryId must be specified for Commands");
@@ -47,10 +53,10 @@ namespace IotCoreWebSocketProxy.Controllers
             }catch(Exception ex)
             {
                 await clientSender.SendError(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new JsonResult(clientSender));
+                return StatusCode(StatusCodes.Status500InternalServerError,clientSender);
             }
                         
-            return Ok(new JsonResult(clientSender));
+            return Ok(clientSender);
         }
 
         private async Task MqttSend(ConnectionModel connection, SyncClientSender clientSender, string payload)

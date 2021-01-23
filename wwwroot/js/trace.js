@@ -96,37 +96,42 @@
                 body: JSON.stringify(message)
             })
                 .then(response => response.json())
-                .then(() => {
-                    $("#device_send").prop("disabled", false);
-                    $("#device_send").html("Send message");
-                    //$('#iot-core-device-send-form-spinner').remove();
-                    getItems();
-                    addNameTextbox.value = '';
-                })
-                .catch(error => console.error('Unable to add item.', error));
+                .then(data => displayMessageSendResults(data))
+                .catch(error => {
+                    write_message("alert-danger", error);
+                    console.error('Unable send message.', error)
+                });
+            // enable button
+            $("#device_send").prop("disabled", false);
+            // remove spinner from button
+            $("#device_send").html("Send message");
         });
 
     }
 
-        function getItems() {
-            fetch(uri)
-                .then(response => response.json())
-                .then(data => _displayItems(data))
-                .catch(error => console.error('Unable to get items.', error));
-        }
+    function displayMessageSendResults(result) {
 
-        function displayEditForm(id) {
-            const item = todos.find(item => item.id === id);
+        if (result) {
+            if (result.info && Array.isArray(result.info)) {
+                result.info.forEach(function (message) {
+                    write_message("alert-info", message);
+                });
+            }
 
-            document.getElementById('edit-name').value = item.name;
-            document.getElementById('edit-id').value = item.id;
-            document.getElementById('edit-isComplete').checked = item.isComplete;
-            document.getElementById('editForm').style.display = 'block';
+            if (result.error && Array.isArray(result.error)) {
+                result.error.forEach(function (message) {
+                    write_message("alert-danger", message);
+                });
+            }
         }
+       }
 
 
         function write_message(alert_class, err) {
             $('#messageList').append(`<li><div class="alert ${alert_class}" role="alert">${err}</div></li>`);
+            if ($('#messageList').children().last()) {
+                scroll_to_latest($('#messageList').children().last()[0]);
+            }
         }
 
         function scroll_to_latest(message_elmt) {
