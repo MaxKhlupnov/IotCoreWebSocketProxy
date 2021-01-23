@@ -22,7 +22,6 @@ namespace IotCoreWebSocketProxy.Hub
 
         internal IoTCoreSubscription(ConnectionModel connection)
         {
-
             if (connection == null)
                 throw new ArgumentNullException("IoTCoreSubscription called with null connection");
 
@@ -38,10 +37,8 @@ namespace IotCoreWebSocketProxy.Hub
                 // Subscribe a registry to a device's permanent topic 
                 this._topic = YaIoTClient.TopicName(connection.DeviceId, EntityType.Device, connection.TopicType);
             }
-
-            
-
         }
+
         public void RegisterMessageTrace(ClientSender sender)
         {
             _sender = sender;

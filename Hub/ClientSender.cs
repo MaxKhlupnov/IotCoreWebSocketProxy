@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IotCoreWebSocketProxy.Hub
 {
-    public class ClientSender
+    public class ClientSender : IClientSender
     {
         private readonly IClientProxy _clientProxy;
         private readonly ILogger _logger;

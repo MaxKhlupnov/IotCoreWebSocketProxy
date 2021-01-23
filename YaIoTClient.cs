@@ -38,15 +38,14 @@ namespace IotCoreWebSocketProxy
 
     private static X509Certificate2 rootCrt = new X509Certificate2("Data/CA.pem");
 
-    private ClientSender _sender;
+    private IClientSender _sender;
 
     private int RetryNumber = 0;
     private const int MAX_RETRIES = 5;
 
-    public YaIoTClient(ClientSender sender)
+    public YaIoTClient(IClientSender sender)
     {
-            this._sender = sender;
-           
+            this._sender = sender;          
     }
     
     /**
