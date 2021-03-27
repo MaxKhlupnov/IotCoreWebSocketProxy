@@ -31,7 +31,7 @@
         </div>
         <div class="form-group">
             <label for="registry-id" class="col-form-label">Registry Id:</label>
-            <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" placeholder="Registry id device belongs to" required />
+            <input type="text" class="form-control" id="registry-id" aria-describedby="registry-id-Help" required placeholder="Registry id device belongs to" />
             <div><small id="registry-id-Help" class="form-text text-muted">We don't store your credentials</small></div>
             <div class="invalid-feedback">
                 Please provide a registry identifier.
@@ -46,8 +46,11 @@
             <textarea disabled rows="3" class="form-control" id="registry-cert" aria-describedby="registry-cert-Help" placeholder="Registry certificate file"></textarea>
             <small id="registry-cert-Help" class="form-text text-muted"></small>
         </div>
-        <button id="trace" type="button" class="btn btn-primary">Trace telemetry</button>
-
+        <button id="trace" type="button" class="btn btn-primary">
+            <span id="traceSpinner" class="spinner spinner-border spinner-border-sm" style="display:none;" role="status" aria-hidden="true"></span>
+            Trace
+        </button>
+        <button id="stopTrace" type="button" class="btn btn-primary" style="display:none;">Stop trace</button>
     </form>
     <hr>
 </section>
@@ -58,4 +61,26 @@
 @section Scripts
     {
     <script src="~/js/trace.js"></script>
+    <script type="text/javascript">
+        document.getElementById("trace-type-cmd").addEventListener("change", async () => {
+            if ($("#trace-type-cmd")[0].checked) {
+                // Command mode
+                $("#registry-id")[0].value = "";
+                $("#registry-id").prop("disabled", true);
+                $("#registry-id").attr('required', false);
+            }
+        });
+
+        function enableRegistryIdInput() {
+            if (!$("#trace-type-cmd")[0].checked){
+                    // event or state mode
+                    $("#registry-id").prop("disabled", false);
+                    $("#registry-id").attr('required', true);
+            }
+        }
+
+        document.getElementById("trace-type-event").addEventListener("change", enableRegistryIdInput);
+        document.getElementById("trace-type-state").addEventListener("change", enableRegistryIdInput)
+
+    </script>
 }

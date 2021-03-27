@@ -26,13 +26,25 @@ namespace IotCoreWebSocketProxy.Controllers
 
             ConnectionModel connection = new ConnectionModel
             {
-                ConnectionId = HttpContext.Connection.RemoteIpAddress.ToString(),
+                ConnectionId = HttpContext.Connection.RemoteIpAddress.ToString(),                
                 TopicType = Enum.Parse<TopicType>(model.TopicType),
                 DeviceId = model.DeviceId,
                 RegistryId = model.RegistryId,
                 Password = model.Password,
                 RegistryCert = model.RegistryCert
             };
+          
+
+            if (!string.IsNullOrEmpty(connection.DeviceId))
+            {
+                connection.Mode = FormMode.DeviceSend;
+            }
+            else
+            {
+                connection.Mode = FormMode.RegistrySend;
+            }
+
+
             SyncClientSender clientSender = new SyncClientSender();
 
             if (string.IsNullOrEmpty(connection.DeviceId) || string.IsNullOrEmpty(connection.Password) || string.IsNullOrEmpty(model.Message))
@@ -45,8 +57,7 @@ namespace IotCoreWebSocketProxy.Controllers
                 await clientSender.SendError("RegistryId must be specified for Commands");
                 return BadRequest(clientSender);
             }
-
-           
+                       
             try
             {
                 await this.MqttSend(connection, clientSender, model.Message);
@@ -70,8 +81,14 @@ namespace IotCoreWebSocketProxy.Controllers
             }
             else
             {
-                //Send data from a device to a device topic
-                topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, connection.TopicType);
+
+                if (connection.Mode == FormMode.DeviceSend) // can't send commands on behalf of device
+                    //Send event data from a device to a registry
+                    topic = YaIoTClient.TopicName(connection.DeviceId, EntityType.Device, connection.TopicType);
+                else if (connection.Mode == FormMode.RegistrySend)
+                        topic = YaIoTClient.TopicName(connection.RegistryId, EntityType.Registry, connection.TopicType);                    
+                else
+                    throw new ArgumentException($"Illegal arguments for mode: {connection.Mode} topic: {connection.TopicType} device: {connection.DeviceId} registry:{connection.RegistryId}");
             }
 
             
@@ -84,7 +101,16 @@ namespace IotCoreWebSocketProxy.Controllers
             else
             // username and password authorization
             {
-                iotCoreClient.StartPwd(connection.ConnectionId, connection.DeviceId, connection.Password);
+                if (connection.Mode == FormMode.DeviceSend && connection.TopicType != TopicType.Commands)
+                { 
+                    iotCoreClient.StartPwd(connection.ConnectionId, connection.DeviceId, connection.Password);
+                    
+                }
+                else
+                {
+                   // we are in send commands mode - authenticate on behalf of registry
+                    iotCoreClient.StartPwd(connection.ConnectionId, connection.RegistryId, connection.Password);
+                }
             }
 
             if (iotCoreClient.WaitConnected())

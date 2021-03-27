@@ -29,6 +29,14 @@ namespace IotCoreWebSocketProxy
     Events = 0,
     Commands = 1,
     State = 2
+  }
+
+  public enum FormMode
+    {
+        TraceDevice = 0,
+        TraceRegistry = 1,
+        DeviceSend = 2,
+        RegistrySend = 3
     }
 
   class YaIoTClient : IDisposable
@@ -148,7 +156,7 @@ namespace IotCoreWebSocketProxy
       mqttClient.UseConnectedHandler(ConnectedHandler);
       this.connProps = options;
       mqttClient.UseDisconnectedHandler(this.DisconnectedHandler);
-            _sender.SendInfo($"Connecting to mqtt.cloud.yandex.net...");
+            _sender.SendInfo($"Connecting to mqtt.cloud.yandex.net with user  {id}...");
       mqttClient.ConnectAsync(options, CancellationToken.None);
     }
 

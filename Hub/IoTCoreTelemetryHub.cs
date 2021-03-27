@@ -53,6 +53,7 @@ namespace IotCoreWebSocketProxy.Hub
             {
                 ConnectionModel conn = new ConnectionModel()
                 {
+                    Mode =  string.IsNullOrEmpty(deviceId) ? FormMode.TraceRegistry : FormMode.TraceDevice,
                     ConnectionId = Context.ConnectionId,
                     TopicType = Enum.Parse<TopicType>(trace_type_radio),
                     DeviceId = deviceId,
@@ -61,7 +62,10 @@ namespace IotCoreWebSocketProxy.Hub
                     RegistryCert = registryCert
                 };
 
-               
+               if (string.IsNullOrEmpty(conn.RegistryId) && conn.TopicType != TopicType.Commands)
+                {
+                    throw new ArgumentException($"registry id must be specified to trace topic {conn.TopicType}");
+                }
 
                 var clientProxy = Clients.Clients(Context.ConnectionId);
 

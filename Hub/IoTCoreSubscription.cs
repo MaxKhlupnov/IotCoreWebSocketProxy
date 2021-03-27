@@ -51,8 +51,9 @@ namespace IotCoreWebSocketProxy.Hub
             }
             else
             // username and password authorization
-            {                
-                this._iotCoreClient.StartPwd(sender.Connection.ConnectionId, sender.Connection.RegistryId, sender.Connection.Password);
+            {   
+                string mqttUser = string.IsNullOrEmpty(sender.Connection.RegistryId) ? sender.Connection.DeviceId : sender.Connection.RegistryId;
+                this._iotCoreClient.StartPwd(sender.Connection.ConnectionId, mqttUser, sender.Connection.Password);
             }
             if (this._iotCoreClient.WaitConnected())
             {

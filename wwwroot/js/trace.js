@@ -23,6 +23,18 @@
     });
     // </snippet_ReceiveMessage>
 
+    // Stop trace button  on click handler
+    if (document.getElementById("stopTrace")) {
+        document.getElementById("stopTrace").addEventListener("click", async () => {
+            $("body").removeClass("busy");
+            // enable button
+            $("#trace").prop("disabled", false);
+            $("#traceSpinner").hide();
+            // hide stop trace button button
+            $("#stopTrace").hide();
+        });
+    }
+
         // Trace telemetry on click handler
     if (document.getElementById("trace")) {
         document.getElementById("trace").addEventListener("click", async () => {
@@ -44,9 +56,10 @@
             // disable button
             $("#trace").prop("disabled", true);
             // add spinner to button
-            $("#trace").html(
-                `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Waiting for telemetry messages...`
-            );
+            $("body").addClass("busy");
+            $("#traceSpinner").show();
+            // display stop trace button button
+            $("#stopTrace").show();
 
             // <snippet_Invoke>
             try {
@@ -95,11 +108,17 @@
                 },
                 body: JSON.stringify(message)
             })
-                .then(response => response.json())
-                .then(data => displayMessageSendResults(data))
+                .then(result => {
+                    //Here body is not ready yet, throw promise
+                    if (!result.ok) throw result;
+                    return result.json();
+                })
+                .then(result => displayMessageSendResults(result))
                 .catch(error => {
-                    write_message("alert-danger", error);
-                    console.error('Unable send message.', error)
+                    error.json().then((err_body) => {
+                        write_message("alert-danger", err_body.errors[0]);
+                        console.error('Unable send message.', err_body.errors[0])
+                    });
                 });
             // enable button
             $("#device_send").prop("disabled", false);
@@ -108,6 +127,7 @@
         });
 
     }
+
 
     function displayMessageSendResults(result) {
 

@@ -44,7 +44,7 @@
                     </small>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="form-group">
             <label for="message" class="col-form-label">Data:</label>
             <textarea rows="3" class="form-control" id="message" aria-describedby="message-Help" placeholder="Event message or command data" required></textarea>
@@ -53,7 +53,7 @@
                 Please specify message data.
             </div>
         </div>
-            <button id="device_send" type="button" class="btn btn-primary">Send</button>
+        <button id="device_send" type="button" class="btn btn-primary">Send</button>
 
     </form>
     <hr>
@@ -63,8 +63,31 @@
 
 @section Scripts
 {
-    <script>
-        $('#sendDeviceTelemetryTab').tab('show')
+    <script type="text/javascript">
+
+        $('#sendDeviceTelemetryTab').tab('show');
+
+        $("#registry-id").prop("disabled", true);
+
+        document.getElementById("trace-type-cmd").addEventListener("change", async () => {
+            if ($("#trace-type-cmd")[0].checked) {
+                // Command mode
+                $("#registry-id").prop("disabled", false);
+                $("#registry-id").attr('required', true); 
+            }
+        });
+
+        function disableRegistryIdInput() {
+            if (!$("#trace-type-cmd")[0].checked) {
+                // event mode
+                $("#registry-id")[0].value = "";
+                $("#registry-id").prop("disabled", true);
+                $("#registry-id").attr('required', false);
+            }
+        }
+
+        document.getElementById("trace-type-event").addEventListener("change", disableRegistryIdInput);
+
     </script>
-    <script src="~/js/trace.js"></script>
+    <script src = "~/js/trace.js" ></script>
 }

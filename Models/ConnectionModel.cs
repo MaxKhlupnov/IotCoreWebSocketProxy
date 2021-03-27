@@ -7,6 +7,7 @@ namespace IotCoreWebSocketProxy.Models
 {
     public class ConnectionModel
     {
+        public FormMode Mode { get; set; }
         public string ConnectionId { get; set; }
         public string DeviceId { get; set; }
         public string RegistryId { get; set; }
